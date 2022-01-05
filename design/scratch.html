@@ -1,0 +1,37 @@
+$.each(result.GroupList, function() {
+    $("body").append(card);  
+  console.log(data);
+  $( "#result" ).html( data[0].name );
+  var flagUrl = data[0].flag;
+  $( "#flag" ).attr("src", flagUrl );
+  $( "#pop" ).html( data[0].population );
+  $( "#lan" ).html( data[0].region );
+  $( "#capital" ).html( data[0].capital );
+
+    );
+});
+
+$("#myBtn").click(function(){
+    
+    $.get( "https://restcountries.com/v2/all/", function( data ) {
+  
+  //const obj = JSON.parse(data);
+  
+   var card = "<div class = 'card-wrapper'><img id='flag' class='top' src=''/><div id='result' class = 'top'></div><div class='inner-card'><div class ='feild'>Population:</div><div id='pop'></div><div class='feild'>Region:</div><div id='lan'></div><div class='feild'>Capital</div><div id='capital'></div></div></div>";  
+   
+   
+});
+});
+
+
+
+
+var card = "<div class = 'card-wrapper'><img id='flag' class='top' src=''/><div id='result' class = 'top'></div><div class='inner-card'><div class ='feild'>Population:</div><div id='pop'></div><div class='feild'>Region:</div><div id='lan'></div><div class='feild'>Capital</div><div id='capital'></div></div></div>";  
+  $("body").append(card);  
+  var name = data[0].name;
+  $( "#result" ).html( data[0].name ).attr("id", name);
+  var flagUrl = data[0].flag;
+  $( "#flag" ).attr({"src": flagUrl, "id": name + "_flag"});
+  $( "#pop" ).html( data[0].population ).attr("id", name + "_pop");
+  $( "#lan" ).html( data[0].region ).attr("id", name + "_lan");
+  $( "#capital" ).html( data[0].capital ).attr("id",name + "_cap");

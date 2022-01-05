@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <title>Countries</title>
+</head>
+
+<body>
+    <div class="top_bar">
+        <div class='title'>Where In The World</div>
+        <div class='dark'>Dark Theme</div>
+    </div>
+    <div id='search' class='search'>
+        <div>
+            <input type="text" id="myInput" value="all">
+        </div>
+        <div class='filter' id='filter'>
+            <select name="choice">
+                <option value="default" selected>Region</option>
+                <option value="africa">Africa</option>
+                <option value="americas">Americas</option>
+                <option value="asia">Asia</option>
+                <option value="europe">Europe</option>
+                <option value="oceania">Oceania</option>
+            </select>
+        </div>
+    </div>
+    <div class='container'>
+
+        <div id='outer' class = 'outer'>
+        <div id="grid_wrap"></div>
+        </div>
+    </div>
+</body>
+<script>
+    $("#myInput").on("keypress", function (e) {
+        if (e.which == 13) {
+
+            removeAllChildNodes(grid_wrap);
+            if ($("#myInput").val() === "all") {
+                $("#card-wrapper").attr("class", "card-wrapper");
+                $("#inner-card").attr("class", "inner-card-detail");
+                all();
+            }
+            else {
+                removeAllChildNodes(grid_wrap);
+                $("#card-wrapper").attr("class", "card-wrapper-detail");
+                $("#inner-card").attr("class", "inner-card-detail");
+                var country = "/name/" + $("#myInput").val();
+                detail(country);
+            }
+
+        }
+    });
+    function removeAllChildNodes(parent) {
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
+    }
+    function all() {
+        $.get("https://restcountries.com/v2/all", function (data) {
+
+            //const obj = JSON.parse(data);
+            
+            $.each(data, function (e) {
+                var card = "<div class = 'card-wrapper' id ='card-wrapper'><img id='flag' class='top' src=''/><div class='inner-card' id = 'inner-card'><div class ='feild'>Name:</div><div id='result'></div><div class ='feild'>Population:</div><div id='pop'></div><div class='feild'>Region:</div><div id='lan'></div><div class='feild'>Capital</div><div id='capital'></div></div></div>";
+                $("#grid_wrap").append(card);
+                var name = data[e].name;
+                $("#result").html(data[e].name).attr("id", name);
+                var flagUrl = data[e].flag;
+                $("#flag").attr({ "src": flagUrl, "id": name + "_flag" });
+                $("#pop").html(data[e].population).attr("id", name + "_pop");
+                $("#lan").html(data[e].region).attr("id", name + "_lan");
+                $("#capital").html(data[e].capital).attr("id", name + "_cap");
+            });
+
+            $("#grid_wrap").attr("class", "grid_wrap");
+            $("#outer").attr("class", "empty");
+        });
+
+
+    }
+    function detail(country) {
+        $.get("https://restcountries.com/v2/" + country, function (data) {
+
+            //const obj = JSON.parse(data);
+            $.each(data, function (e) {
+                var card = "<img id='flag' class='left' src='' /><div class='card-wrapper-detail' id='card-wrapper'><div class='inner-detail-top'><div id='name' class = 'name'></div></div><div class='inner-detail-left'><div class='feild'>Native Name:</div><div id='native'></div><div class='feild'>Population:</div><div id='pop'></div><div class='feild'>Region:</div><div id='region'></div><div class='feild'>Capital</div><div id='capital'></div></div><div class='inner-detail-right'><div class='feild'>Top Level Domain:</div><div id='tld'></div><div class='feild'>Currencies:</div><div id='currency'></div><div class='feild'>Languages:</div><div id='lan'></div></div><div class='inner-detail-bottom'><div class='feild'>Border Countries:</div><div id='borders'></div></div></div>";
+                $("#grid_wrap").append(card);
+                $("#name").html(data[e].name);
+                var flagUrl = data[e].flag;
+                $("#flag").attr({ "src": flagUrl});
+                $("#pop").html(data[e].population);
+                $("#region").html(data[e].region);
+                $("#capital").html(data[e].capital);
+                $("#tld").html(data[e].topLevelDomain[0]);
+                $("#currency").html(data[e].currencies[0].name);
+                $("#borders").html(data[e].borders[0]);
+                $("#lan").html(data[e].languages[0].name);
+                $("#native").html(data[e].nativeName);
+            });
+
+            $("#grid_wrap").attr("class", "grid_wrap_detail");
+            $("#outer").attr("class", "outer");
+        });
+    }
+
+    $('select').change(function () {
+        alert(this.value);
+    });
+
+</script>
+
+</html>
