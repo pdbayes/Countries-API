@@ -20,13 +20,13 @@
             <input type="text" id="myInput" value="all">
         </div>
         <div class='filter' id='filter'>
-            <select name="choice">
+            <select name="choice" id="select">
                 <option value="default" selected>Region</option>
-                <option value="africa">Africa</option>
-                <option value="americas">Americas</option>
-                <option value="asia">Asia</option>
-                <option value="europe">Europe</option>
-                <option value="oceania">Oceania</option>
+                <option value="Africa">Africa</option>
+                <option value="Americas">Americas</option>
+                <option value="Asia">Asia</option>
+                <option value="Europe">Europe</option>
+                <option value="Oceania">Oceania</option>
             </select>
         </div>
     </div>
@@ -110,9 +110,37 @@
         });
     }
 
-    $('select').change(function () {
-        alert(this.value);
-    });
+    document.getElementById("select").onchange=function() { 
+        removeAllChildNodes(grid_wrap);
+        var region = this.value;
+        console.log('running region ' + region);
+        $.get("https://restcountries.com/v2/all", function (data) {
+
+            //const obj = JSON.parse(data);
+            console.log(region);
+            $.each(data, function (e) {
+                console.log("current region is " + data[e].region + "filter region is " + region)
+                if (data[e].region === region){
+                    console.log("correct region")
+                    var card = "<div class = 'card-wrapper' id ='card-wrapper'><img id='flag' class='top' src=''/><div class='inner-card' id = 'inner-card'><div class ='feild'>Name:</div><div id='result'></div><div class ='feild'>Population:</div><div id='pop'></div><div class='feild'>Region:</div><div id='lan'></div><div class='feild'>Capital</div><div id='capital'></div></div></div>";
+                    $("#grid_wrap").append(card);
+                    var name = data[e].name;
+                    $("#result").html(data[e].name).attr("id", name);
+                    var flagUrl = data[e].flag;
+                    $("#flag").attr({ "src": flagUrl, "id": name + "_flag" });
+                    $("#pop").html(data[e].population).attr("id", name + "_pop");
+                    $("#lan").html(data[e].region).attr("id", name + "_lan");
+                    $("#capital").html(data[e].capital).attr("id", name + "_cap");
+                }
+            });
+
+            $("#grid_wrap").attr("class", "grid_wrap");
+            $("#outer").attr("class", "empty");
+        });
+
+
+    }
+
 
 </script>
 
