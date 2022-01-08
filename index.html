@@ -17,7 +17,16 @@
     </div>
     <div id='search' class='search'>
         <div>
-            <input type="text" id="myInput" value="all">
+            <form id="form" role="search">
+                <input type="search" id="myInput" name = "q" placeholder="search...">
+                <button>
+                     <svg viewBox="0 0 1024 1024">
+                         <path class="path1" d="M848.471 928l-263.059-263.059c-48.941 36.706-110.118 55.059-177.412 55.059-171.294 0-312-140.706-312-312s140.706-312 312-312c171.294 0 312 140.706 312 312 0 67.294-24.471 128.471-55.059 177.412l263.059 263.059-79.529 79.529zM189.623 408.078c0 121.364 97.091 218.455 218.455 218.455s218.455-97.091 218.455-218.455c0-121.364-103.159-218.455-218.455-218.455-121.364 0-218.455 97.091-218.455 218.455z">
+                         </path>
+                        </svg>
+                    </button>
+            </form>
+
         </div>
         <div class='filter' id='filter'>
             <select name="choice" id="select">
@@ -38,6 +47,33 @@
     </div>
 </body>
 <script>
+    $( document ).ready(function() {
+    all();
+        });
+
+        const f = document.getElementById('form');
+        const q = document.getElementById('myInput');
+        function submitted(event) {
+                event.preventDefault();
+                removeAllChildNodes(grid_wrap);
+            if ($("#myInput").val() === "all") {
+                $("#card-wrapper").attr("class", "card-wrapper");
+                $("#inner-card").attr("class", "inner-card-detail");
+                all();
+            }
+            else {
+                removeAllChildNodes(grid_wrap);
+                $("#card-wrapper").attr("class", "card-wrapper-detail");
+                $("#inner-card").attr("class", "inner-card-detail");
+                var country = "/name/" + $("#myInput").val();
+                detail(country);
+            }
+                
+            }
+
+        f.addEventListener('submit', submitted);
+
+
     $("#myInput").on("keypress", function (e) {
         if (e.which == 13) {
 
@@ -73,7 +109,13 @@
                 var name = data[e].name;
                 $("#result").html(data[e].name).attr("id", name);
                 var flagUrl = data[e].flag;
-                $("#flag").attr({ "src": flagUrl, "id": name + "_flag" });
+                $("#flag").attr({ "src": flagUrl, "id": name + "_flag"}).on("click", function(){
+                    removeAllChildNodes(grid_wrap);
+                    $("#card-wrapper").attr("class", "card-wrapper-detail");
+                    $("#inner-card").attr("class", "inner-card-detail");
+                    console.log(this.id);
+                    detail("name/" + name);
+                });
                 $("#pop").html(data[e].population).attr("id", name + "_pop");
                 $("#lan").html(data[e].region).attr("id", name + "_lan");
                 $("#capital").html(data[e].capital).attr("id", name + "_cap");
@@ -89,21 +131,21 @@
         $.get("https://restcountries.com/v2/" + country, function (data) {
 
             //const obj = JSON.parse(data);
-            $.each(data, function (e) {
+            console.log(data);
                 var card = "<img id='flag' class='left' src='' /><div class='card-wrapper-detail' id='card-wrapper'><div class='inner-detail-top'><div id='name' class = 'name'></div></div><div class='inner-detail-left'><div class='feild'>Native Name:</div><div id='native'></div><div class='feild'>Population:</div><div id='pop'></div><div class='feild'>Region:</div><div id='region'></div><div class='feild'>Capital</div><div id='capital'></div></div><div class='inner-detail-right'><div class='feild'>Top Level Domain:</div><div id='tld'></div><div class='feild'>Currencies:</div><div id='currency'></div><div class='feild'>Languages:</div><div id='lan'></div></div><div class='inner-detail-bottom'><div class='feild'>Border Countries:</div><div id='borders'></div></div></div>";
                 $("#grid_wrap").append(card);
-                $("#name").html(data[e].name);
-                var flagUrl = data[e].flag;
+                $("#name").html(data[0].name);
+                var flagUrl = data[0].flag;
                 $("#flag").attr({ "src": flagUrl});
-                $("#pop").html(data[e].population);
-                $("#region").html(data[e].region);
-                $("#capital").html(data[e].capital);
-                $("#tld").html(data[e].topLevelDomain[0]);
-                $("#currency").html(data[e].currencies[0].name);
-                $("#borders").html(data[e].borders[0]);
-                $("#lan").html(data[e].languages[0].name);
-                $("#native").html(data[e].nativeName);
-            });
+                $("#pop").html(data[0].population);
+                $("#region").html(data[0].region);
+                $("#capital").html(data[0].capital);
+                $("#tld").html(data[0].topLevelDomain[0]);
+                $("#currency").html(data[0].currencies[0].name);
+                $("#borders").html(data[0].borders[0]);
+                $("#lan").html(data[0].languages[0].name);
+                $("#native").html(data[0].nativeName);
+        
 
             $("#grid_wrap").attr("class", "grid_wrap_detail");
             $("#outer").attr("class", "outer");
